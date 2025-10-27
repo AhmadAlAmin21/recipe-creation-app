@@ -21,6 +21,7 @@ const Main: React.FC<MainProps> = ({ count, setCount }) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isActionsOpen, setIsActionsOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [lastCreatedId, setLastCreatedId] = useState<string | null>(null);
   const [recipes, setRecipes] = useState<Recipe[]>(() => {
     const savedRecipes = localStorage.getItem("recipes");
     if (savedRecipes) {
@@ -57,6 +58,7 @@ const Main: React.FC<MainProps> = ({ count, setCount }) => {
       steps: [],
     };
     setRecipes((prev) => [...prev, newRecipe]);
+    setLastCreatedId(newRecipe.id);
   };
 
   const handleImportClick = () => {
@@ -257,6 +259,7 @@ const Main: React.FC<MainProps> = ({ count, setCount }) => {
                 exportDisabled={
                   !validateRecipe(recipe).valid || recipe.steps.length === 0
                 }
+                defaultExpanded={recipe.id === lastCreatedId}
               >
                 <div className="text-gray-600 dark:text-gray-400 space-y-3">
                   <RecipeEditor
