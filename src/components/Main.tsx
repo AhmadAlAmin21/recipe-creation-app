@@ -254,7 +254,9 @@ const Main: React.FC<MainProps> = ({ count, setCount }) => {
                 title={recipe.title}
                 onDelete={() => handleDeleteRecipe(recipe.id)}
                 onExport={() => handleExportRecipe(recipe)}
-                exportDisabled={!validateRecipe(recipe).valid}
+                exportDisabled={
+                  !validateRecipe(recipe).valid || recipe.steps.length === 0
+                }
               >
                 <div className="text-gray-600 dark:text-gray-400 space-y-3">
                   <RecipeEditor
