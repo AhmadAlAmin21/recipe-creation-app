@@ -1,5 +1,8 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
+import { Provider } from "react-redux";
+import { store } from "./store";
+import ThemeManager from "./components/ThemeManager";
 import App from "./App";
 import "./index.css";
 
@@ -8,6 +11,9 @@ const root = createRoot(container!);
 
 root.render(
   <React.StrictMode>
-    <App />
+    <Provider store={store}>
+      <ThemeManager />
+      <App />
+    </Provider>
   </React.StrictMode>
 );

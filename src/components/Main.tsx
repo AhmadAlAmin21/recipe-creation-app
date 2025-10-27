@@ -114,21 +114,91 @@ const Main: React.FC<MainProps> = ({ count, setCount }) => {
     setRecipes((prev) => prev.filter((r) => r.id !== id));
   };
 
+  const handleExportRecipe = (recipe: Recipe) => {
+    const json = JSON.stringify(recipe, null, 2);
+    const blob = new Blob([json], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${recipe.title || "recipe"}.json`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  };
+
   return (
-    <main className="flex-1 p-6">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center">
-          <div className="relative">
-            <button
-              onClick={toggleActions}
-              className="text-3xl font-bold text-gray-900 dark:text-gray-100 text-left hover:text-gray-700 dark:hover:text-gray-300 transition-colors border-none bg-transparent outline-none flex items-center space-x-2"
-              title="Recipes Actions"
-            >
-              <span>Recipes</span>
+    <main className="flex-1">
+      <header className="appbar">
+        <div className="container" style={{ width: "100%" }}>
+          <div className="flex items-center justify-between">
+            <div className="relative flex items-center">
+              <button
+                onClick={toggleActions}
+                className="btn btn-ghost"
+                title="Recipes Actions"
+              >
+                <span className="typography-h4">Recipes</span>
+                <svg
+                  className={`${
+                    isActionsOpen ? "rotate-180" : ""
+                  } w-5 h-5 transition-transform`}
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+
+              {isActionsOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setIsActionsOpen(false)}
+                  />
+                  <div className="absolute top-full left-0 mt-1 menu z-50">
+                    <div className="py-1">
+                      <button
+                        className="menu-item text-sm"
+                        onClick={() => {
+                          setIsActionsOpen(false);
+                          setIsCreateModalOpen(true);
+                        }}
+                      >
+                        Create Recipe
+                      </button>
+                      <button
+                        className="menu-item text-sm"
+                        onClick={() => {
+                          setIsActionsOpen(false);
+                          handleImportClick();
+                        }}
+                      >
+                        Import Recipe
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* hidden file input for import */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="application/json,.json"
+              className="hidden"
+              onChange={handleImportFile}
+            />
+            <button onClick={toggleDrawer} className="icon-btn" title="Menu">
               <svg
-                className={`w-5 h-5 transition-transform ${
-                  isActionsOpen ? "rotate-180" : ""
-                }`}
+                className="w-6 h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -137,135 +207,75 @@ const Main: React.FC<MainProps> = ({ count, setCount }) => {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
+                  d="M4 6h16M4 12h16M4 18h16"
                 />
               </svg>
             </button>
-
-            {isActionsOpen && (
-              <>
-                <div
-                  className="fixed inset-0 z-40"
-                  onClick={() => setIsActionsOpen(false)}
-                />
-                <div className="absolute top-full left-0 mt-1 w-48 bg-white dark:bg-gray-800 shadow-lg rounded-lg border border-gray-200 dark:border-gray-700 z-50">
-                  <div className="py-1">
-                    <button
-                      className="w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 text-left transition-colors border-none bg-transparent outline-none"
-                      onClick={() => {
-                        setIsActionsOpen(false);
-                        setIsCreateModalOpen(true);
-                      }}
-                    >
-                      Create Recipe
-                    </button>
-                    <button
-                      className="w-full px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-700 text-left transition-colors border-none bg-transparent outline-none"
-                      onClick={() => {
-                        setIsActionsOpen(false);
-                        handleImportClick();
-                      }}
-                    >
-                      Import Recipe
-                    </button>
-                  </div>
-                </div>
-              </>
-            )}
           </div>
         </div>
-        {/* hidden file input for import */}
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="application/json,.json"
-          className="hidden"
-          onChange={handleImportFile}
+      </header>
+
+      <div className="container p-6">
+        <SideDrawer
+          isOpen={isDrawerOpen}
+          onClose={() => setIsDrawerOpen(false)}
         />
-        <button
-          onClick={toggleDrawer}
-          className="text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors border-none bg-transparent outline-none"
-          title="Menu"
-        >
-          <svg
-            className="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 6h16M4 12h16M4 18h16"
-            />
-          </svg>
-        </button>
-      </div>
 
-      <SideDrawer
-        isOpen={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-      />
-
-      {/* Recipe Containers */}
-      <div className="space-y-6">
-        {recipes.length === 0 ? (
-          <div className="text-center py-12">
-            <div className="text-gray-400 dark:text-gray-500 mb-4">
-              <svg
-                className="w-16 h-16 mx-auto"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1}
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-            </div>
-            <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
-              No recipes yet
-            </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              Click "Create Recipe" to add your first recipe
-            </p>
-          </div>
-        ) : (
-          recipes.map((recipe) => (
-            <CollapsibleContainer key={recipe.id} title={recipe.title}>
-              <div className="text-gray-600 dark:text-gray-400 space-y-3">
-                <div className="flex items-center justify-between">
-                  <p className="text-sm text-gray-500 dark:text-gray-500">
-                    Created: {new Date(recipe.createdAt).toLocaleDateString()}
-                  </p>
-                  <button
-                    onClick={() => handleDeleteRecipe(recipe.id)}
-                    className="text-xs px-2 py-1 rounded border border-red-300 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
-                    title="Delete Recipe"
-                  >
-                    Delete
-                  </button>
-                </div>
-                <RecipeEditor
-                  recipe={recipe}
-                  onChange={(updated) => updateRecipe(recipe.id, () => updated)}
-                />
+        {/* Recipe Containers */}
+        <div className="space-y-6">
+          {recipes.length === 0 ? (
+            <div className="text-center py-12">
+              <div className="text-gray-400 dark:text-gray-500 mb-4">
+                <svg
+                  className="w-16 h-16 mx-auto"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
               </div>
-            </CollapsibleContainer>
-          ))
-        )}
-      </div>
+              <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">
+                No recipes yet
+              </h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                Click "Create Recipe" to add your first recipe
+              </p>
+            </div>
+          ) : (
+            recipes.map((recipe) => (
+              <CollapsibleContainer
+                key={recipe.id}
+                title={recipe.title}
+                onDelete={() => handleDeleteRecipe(recipe.id)}
+                onExport={() => handleExportRecipe(recipe)}
+                exportDisabled={!validateRecipe(recipe).valid}
+              >
+                <div className="text-gray-600 dark:text-gray-400 space-y-3">
+                  <RecipeEditor
+                    recipe={recipe}
+                    onChange={(updated) =>
+                      updateRecipe(recipe.id, () => updated)
+                    }
+                  />
+                </div>
+              </CollapsibleContainer>
+            ))
+          )}
+        </div>
 
-      {/* Create Recipe Modal */}
-      <CreateRecipeModal
-        isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
-        onCreateRecipe={handleCreateRecipe}
-      />
+        {/* Create Recipe Modal */}
+        <CreateRecipeModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          onCreateRecipe={handleCreateRecipe}
+        />
+      </div>
     </main>
   );
 };

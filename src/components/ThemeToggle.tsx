@@ -1,8 +1,11 @@
 import React from "react";
-import { useTheme } from "../contexts/ThemeContext";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store";
+import { setTheme } from "../store/themeSlice";
 
 const ThemeToggle: React.FC = () => {
-  const { theme, setTheme } = useTheme();
+  const dispatch = useDispatch();
+  const theme = useSelector((s: RootState) => s.theme.theme);
 
   const themes = [
     { value: "light", label: "Light" },
@@ -19,7 +22,7 @@ const ThemeToggle: React.FC = () => {
         {themes.map(({ value, label }) => (
           <button
             key={value}
-            onClick={() => setTheme(value)}
+            onClick={() => dispatch(setTheme(value))}
             className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors border-none outline-none ${
               theme === value
                 ? value === "light"

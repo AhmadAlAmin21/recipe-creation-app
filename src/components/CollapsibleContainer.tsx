@@ -5,6 +5,9 @@ interface CollapsibleContainerProps {
   children: React.ReactNode;
   defaultExpanded?: boolean;
   className?: string;
+  onDelete?: () => void;
+  onExport?: () => void;
+  exportDisabled?: boolean;
 }
 
 const CollapsibleContainer: React.FC<CollapsibleContainerProps> = ({
@@ -12,6 +15,9 @@ const CollapsibleContainer: React.FC<CollapsibleContainerProps> = ({
   children,
   defaultExpanded = false,
   className = "",
+  onDelete,
+  onExport,
+  exportDisabled = false,
 }) => {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded);
 
@@ -21,38 +27,74 @@ const CollapsibleContainer: React.FC<CollapsibleContainerProps> = ({
 
   return (
     <div className={`w-full max-w-4xl mx-auto ${className}`}>
-      <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 shadow-sm">
+      <div className="paper">
         {/* Header */}
-        <button
-          onClick={toggleExpanded}
-          className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors border-none bg-transparent outline-none rounded-lg"
+        <div
+          className="px-6 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+          style={{ borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
         >
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
-            {title}
-          </h3>
-          <svg
-            className={`w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform ${
-              isExpanded ? "rotate-180" : ""
-            }`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+          <button
+            onClick={toggleExpanded}
+            className="flex-1 flex items-center justify-between text-left border-none bg-transparent outline-none"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </button>
+            <h3 className="typography-h5">{title}</h3>
+            <div className="flex items-center gap-2">
+              {(onDelete || onExport) && (
+                <>
+                  {onExport && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onExport();
+                      }}
+                      className="btn btn-primary"
+                      disabled={exportDisabled}
+                      title="Export JSON"
+                    >
+                      Export
+                    </button>
+                  )}
+                  {onDelete && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete();
+                      }}
+                      className="btn btn-danger-outlined"
+                      title="Delete Recipe"
+                    >
+                      Delete
+                    </button>
+                  )}
+                </>
+              )}
+              <svg
+                className={`w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform ${
+                  isExpanded ? "rotate-180" : ""
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </div>
+          </button>
+        </div>
 
         {/* Content */}
         {isExpanded && (
           <div className="px-6 pb-4">
-            <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
-              {children}
-            </div>
+            <div
+              className="divider"
+              style={{ marginLeft: -24, marginRight: -24 }}
+            />
+            <div className="pt-4">{children}</div>
           </div>
         )}
       </div>

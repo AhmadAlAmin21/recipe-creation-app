@@ -38,16 +38,11 @@ const CreateRecipeModal: React.FC<CreateRecipeModalProps> = ({
       />
 
       {/* Modal */}
-      <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4">
+      <div className="relative paper max-w-md w-full mx-4">
         <div className="px-6 pt-4">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
-              Create New Recipe
-            </h2>
-            <button
-              onClick={handleClose}
-              className="text-gray-600 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200 transition-colors border-none bg-transparent outline-none"
-            >
+            <h2 className="typography-h5">Create New Recipe</h2>
+            <button onClick={handleClose} className="icon-btn">
               <svg
                 className="w-6 h-6"
                 fill="none"
@@ -64,7 +59,7 @@ const CreateRecipeModal: React.FC<CreateRecipeModalProps> = ({
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="stack-v">
             <div>
               <input
                 type="text"
@@ -72,7 +67,7 @@ const CreateRecipeModal: React.FC<CreateRecipeModalProps> = ({
                 value={recipeTitle}
                 onChange={(e) => setRecipeTitle(e.target.value)}
                 placeholder="Enter recipe title..."
-                className="w-full px-3 py-2 rounded-lg focus:ring-2 focus:ring-blue-500 bg-gray-100 dark:bg-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 outline-none border-none"
+                className="input"
                 autoFocus
                 required
               />
@@ -81,7 +76,7 @@ const CreateRecipeModal: React.FC<CreateRecipeModalProps> = ({
             <div className="flex justify-center pt-2 pb-8">
               <button
                 type="submit"
-                className="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 font-medium transition-colors border-none bg-transparent outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn btn-primary disabled:opacity-50"
                 disabled={!recipeTitle.trim()}
               >
                 Create Recipe
