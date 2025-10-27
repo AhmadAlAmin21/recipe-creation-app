@@ -9,7 +9,6 @@ interface SideDrawerProps {
 const SideDrawer: React.FC<SideDrawerProps> = ({ isOpen, onClose }) => {
   return (
     <>
-      {/* Backdrop */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-50 z-40"
@@ -17,7 +16,6 @@ const SideDrawer: React.FC<SideDrawerProps> = ({ isOpen, onClose }) => {
         />
       )}
 
-      {/* Drawer */}
       <div
         className={`fixed top-0 right-0 h-full w-80 paper transform transition-transform duration-300 ease-in-out z-50 ${
           isOpen ? "translate-x-0" : "translate-x-full"

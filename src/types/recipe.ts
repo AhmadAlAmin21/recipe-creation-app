@@ -9,21 +9,21 @@ export interface TakeImageStep extends BaseStep {
   type: "takeImage";
   includePointcloud: boolean;
   imageScope: "full" | "section";
-  centerX?: number; // required when imageScope === "section"
-  centerY?: number; // required when imageScope === "section"
+  centerX?: number;
+  centerY?: number;
 }
 
 export interface UnscrewingStep extends BaseStep {
   type: "unscrewing";
   mode: "automatic" | "specific";
-  x?: number; // required when mode === "specific"
-  y?: number; // required when mode === "specific"
+  x?: number;
+  y?: number;
 }
 
 export interface Recipe {
   id: string;
   title: string;
-  createdAt: string; // ISO string for easy JSON export/import
+  createdAt: string;
   steps: Step[];
 }
 

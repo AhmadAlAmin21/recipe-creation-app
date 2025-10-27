@@ -148,6 +148,11 @@ code {
   margin-bottom: 0.5rem;
 }
 
+.text-xs {
+  font-size: 0.75rem;
+  line-height: 1rem;
+}
+
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
@@ -180,6 +185,10 @@ code {
 
 .text-white {
   color: #ffffff;
+}
+
+.text-red-600 {
+  color: #dc2626;
 }
 
 .bg-white {
